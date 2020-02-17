@@ -136,10 +136,3 @@ function getInteriorFaces(input) {
   return JSON.stringify({ "faces": faces, "vertices": vertices });
 }
 
-// Convert a list of polygons (faces) to JSON format.
-function facesToJSON(faces, vertices) {
-  json = JSON.stringify([faces, vertices]);
-  console.log(json);
-  obj = console.log(JSON.parse(json));
-  console.log(obj);
-}
