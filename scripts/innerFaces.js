@@ -61,10 +61,10 @@ function angle(u, v) {
 function isCCW(face, vertices) {
   // Compute relative position of consecutive vertices of the face
   //  as a sequence of vectors.
-  vectors = [];
-  p0 = vertices[face[face.length - 1]];
-  p1 = vertices[face[0]];
-  vector = [p1[0] - p0[0], p1[1] - p0[1]];
+  var vectors = [];
+  var p0 = vertices[face[face.length - 1]];
+  var p1 = vertices[face[0]];
+  var vector = [p1[0] - p0[0], p1[1] - p0[1]];
   vectors.push(vector);
   for (var i = 0; i + 1 < face.length; i++) {
     p0 = vertices[face[i]];
@@ -78,10 +78,10 @@ function isCCW(face, vertices) {
   vectors.push([vectors[0][0], vectors[0][1]]);
 
   // Add the consecutive orientation (angle) changes.
-  angle_sum = 0;
+  var angle_sum = 0;
   for (var i = 0; i + 1 < vectors.length; i++) {
-    u = vectors[i];
-    v = vectors[i + 1];
+    var u = vectors[i];
+    var v = vectors[i + 1];
     angle_sum += angle(u, v);
   }
   // face is a closed polygon, hence angle_sum == 2*PI or -2*PI.
@@ -92,7 +92,18 @@ function isCCW(face, vertices) {
     return false; // Overall negative (CW) angle change
 }
 
-// Find all the internal faces.
+// Make a list of edges and their twins.
+function addTwins(edges)
+{
+  var twins = [];
+  for (edge of edges){
+    twins.push(edge);
+    twins.push([edge[1], edge[0]]);
+  }
+  return twins;
+}
+
+// Find all the interior faces.
 // Time complexity: O(E)
 function getInteriorFaces(input) {
   var vertices = input["vertices"];
@@ -102,7 +113,7 @@ function getInteriorFaces(input) {
 
   // Make a map from each edge to its next CCW edge.
   // Time complexity: O(|E|).
-  nextCCW = {};
+  var nextCCW = {};
   for (var u = 0; u < vertices.length; u++) {
     var i = 0;
     for (; i + 1 < graph[u].length; i++) {
@@ -113,12 +124,12 @@ function getInteriorFaces(input) {
     nextCCW[[graph[u][i], u]] = [u, graph[u][0]];
   }
 
-  // Following the next-CCW edges result in CW inner faces
-  //  and CCW outer faces.
+  // Following the next-CCW edges results in 
+  //  CW inner faces and CCW outer faces.
   // Time complexity: O(|E|)
-  visited = {};
-  faces = [];
-  for (edge of edges) {
+  var visited = {};
+  var faces = [];
+  for (edge of addTwins(edges)) {
     if (visited[edge]) continue;
     face = [edge[0]];
     visited[edge] = true;
